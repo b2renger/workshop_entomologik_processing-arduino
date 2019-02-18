@@ -130,7 +130,7 @@ x = centerX + distance * cos(angle);
 y = centerY + distance * sin(angle);
 ```
 
-````java
+```java
 void setup() {
   size(800, 600);
   background(0);
