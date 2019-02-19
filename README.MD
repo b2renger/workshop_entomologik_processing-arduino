@@ -337,9 +337,144 @@ Next step will be to make it bloom with some data coming from arduino !
 
 # Processing + arduino == fun !
 
+## Make our flower bloom with data from a sensor
 
+To do this we will need to make a little bit of arduino.
+
+First you will need to make one of those two circuits and flash your arduino card with the appropriate code.
+
+- either use a [potentiometer](https://github.com/b2renger/Introduction_arduino#potentiom%C3%A8tre)
+- or a [photoresistance](https://github.com/b2renger/Introduction_arduino#photo-r%C3%A9sistance)
+- or a [microphone](https://github.com/b2renger/Introduction_arduino#micro)
     
+Now that we have done this we need to write some arduino code to post the value on our **Serial** port. For this we will format our data to the [JSON](https://fr.wikipedia.org/wiki/JavaScript_Object_Notation) format. 
 
+Our JSON string will look something like this :
+
+```js
+{
+    "value" : value-read-from-our-sensor
+}
+```
+
+This little bit of code will help you to build the string with json formatting (if your sensor is plugged in on analog 0 :
+
+```c
+String json;
+  json = "{\"valeur1\":";
+  json = json + analogRead(0);
+  json = json + "}";
+```
+
+Now we just need to post this thing on the serial port : 
+
+```c
+void setup() {
+  Serial.begin(9600); //open the serial port
+}
+
+void loop() {
+  
+  int value = analogRead(0); // read the value on analog 0
+  
+  // format a string to a json format and add our value read from A0
+  String json;
+  json = "{\"valeur1\":";
+  json = json + value;
+  json = json + "}";
+             
+  // post the string on the serial port
+  Serial.println(json);
+}
+```
+
+You will find the code for this arduino program in the folder "sketch_03_a_arduino_read_and_post"
+
+On the processing side of things we will want to read the data posted on the usb cable. For this we need to use a library : the [serial library](https://processing.org/reference/libraries/serial/index.html).
+
+So right at the top of our previous sketch we will import the lib :
+
+```java
+import processing.serial.*;
+````
+
+And just below this we will create a new variable of the type **Serial** to create a connection for now we just create it and will initialize it in the setup.
+
+```java
+Serial myPort;
+```
+
+Since we are here we will also create a variable to store the value coming from the arduino.
+
+```java
+int valueFromArduino = 0;
+```
+
+Then in the setup, we will initialize our connection :
+
+```java
+printArray(Serial.list()); // print the list of devices connected via usb
+String portName = Serial.list()[3]; // my arduino card is the third one on the list, check yours !
+myPort = new Serial(this, portName, 9600); // open up the communication
+myPort.bufferUntil('\n'); // mandatory for now
+
+```
+
+The we will need to get the data when it is sent by our arduino card. The serial lib gives a function for that : we can write code in it, and it will automatically get executed when the arduino sends something. This need to be written oustide setup or draw.
+
+```java
+void serialEvent (Serial myPort) {
+  
+}
+```
+Now this gets complicated but you can just copy/paste this code for now. You don't need to understand everything, but just to get what you need to modify to make what you actually want
+
+```java
+void serialEvent (Serial myPort) {
+  try { // we try to do something but do not worry if it doesn't work !
+    while (myPort.available() > 0) {
+      String inBuffer = myPort.readStringUntil('\n'); // read the data received
+      if (inBuffer != null) { // if it's not empty
+        if (inBuffer.substring(0, 1).equals("{")) { // and if it looks like json
+          JSONObject json = parseJSONObject(inBuffer); // we try to read it as json 
+                                                   
+          // Now you need to understand !!
+          if (json == null) { // if it's no json we just don't do anything
+          }
+          else { //if it is json we get the data
+            
+              valueFromArduino    = json.getInt("valeur1");
+             
+            }
+          }
+        // we just need to close every curly bracket we opened ^^
+        } 
+        else {
+        }
+      }
+    }
+  } 
+  catch (Exception e) {
+  }
+}
+```
+
+Now in the draw we can just map the value received to something usable as our centerSize int the draw
+
+```java
+centerSize = map(valueFromArduino, 0, 1023, 0, 150);
+```
+You will find the code for this sketch in the folder "sketch_03_b_processing_read_from_serial_and_bloom"
+
+## Read data from sensors and log them on our computer.
+
+Now we will look how to get data from arduino and log it into a file on our computer : a bit less fun but pretty usefull.
+
+You will find the code for this program in the folder "sketch_04_Data_logging", it includes :
+- a arduino program reading from two sensors and posting on the serial port
+- a processing program reading the values and writing them on a file on the hard drive.
+
+You have to try to make this work with two sensors of your choice, and then add a third one by modifying both programs.
 
 
 # Digging a little deeper with Processing

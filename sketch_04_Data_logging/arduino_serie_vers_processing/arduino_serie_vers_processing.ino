@@ -1,24 +1,22 @@
+/*This code write data from two sensors on the serial port
+ * one sensor is plugged in analog 0
+ * the other one is plugged in digital 2
+ */
+
 void setup() {
   Serial.begin(9600);
   pinMode(7, INPUT);
 }
 
 void loop() {
-  int pir = digitalRead(2);
-  int photor = analogRead(A0);
-  /*
-  Serial.print("pir: ");
-  Serial.println(pir);
-  Serial.print("photor: ");
-  Serial.println(photor);*/
 
   delay(5000);
 
 
   String json;
-  json = "{\"photor\":";
+  json = "{\"valeur1\":";
   json = json + analogRead(A0);
-  json = json +";\"pir\":";
+  json = json +";\"valeur2\":";
   json = json +  digitalRead(2);
   json = json + "}";
 
