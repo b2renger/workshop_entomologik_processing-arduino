@@ -12,6 +12,7 @@ void draw() {
   pushMatrix();
   pushStyle();
   translate(width*0.5, height*0.5);
+  
   centerSize = map(mouseX, 0, width, 0, 150);
   
   for (int i = 0; i < 15; i++) {

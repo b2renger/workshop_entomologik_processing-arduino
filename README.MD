@@ -223,11 +223,107 @@ Once it is done you will find yourself with a beautifull flower like this one :
 You will find the code for this first sketch in the folder "sketch_01_first_flower".
 
     
-### Let's use some variables to parametrize our flower
+### Let's use a variable to parametrize our flower and make it bloom !
 
+To make our flower bloom we will need to create a **variable**. A variable is a space in our computer's memory where we store something alongside with a name (of your choosing) to enable easy access to this value either to read it or to modify it.
 
+We can store many things in the memory defined by their type :
+- **float** to store a decimal number
+- **int** to store integers numbers.
+- **String** to store some text
+- **boolean** to store a 0 or 1 which is equivalent to *false* or *true*.
 
+Here we will want to define a float that will be used to define the size of the center of our flower.
 
+```java
+float centerSize = 50;
+```
+
+One important notion is the **scope** of the variable. The scope is the chunck of code in which the variable exists : the scope of any variable is limited to the opening curly bracket **{** preceeding it and the closing curly bracket **}** following it. If you create a variable before the setup() it will be available all over the program. If you create in the setup it will only exist in the setup; if you create one in a if statement it will only exist in this precise if statement etc.
+
+So we will want to create a global variable : available in our whole program ie before the setup.
+
+Now we will use it ! This variable will impact the size of the ellipse we are drawing
+
+```java
+ellipse(0, 0, centerSize, centerSize);
+```
+
+But also how we calculate the positions of the petals of our corollas.
+
+```java
+for (int i = 0; i < 10; i++) {
+    fill(45, 100, 100, 50);
+    stroke (45, 100, 100, 50);
+    strokeWeight(1);
+
+    float x = cos(i*(TWO_PI)/10)*centerSize/2;
+    float y = sin(i*(TWO_PI)/10)*centerSize/2;
+    float rad = 100;
+    ellipse(x, y, rad, rad);
+}
+```
+
+Here is the full code with the centerSize variable used :
+
+```java
+float centerSize = 50;
+
+void setup() {
+  size(800, 600);
+  background(0);
+  colorMode(HSB, 360, 100, 100, 100);
+}
+
+void draw() {
+  background(0);
+
+  pushMatrix();
+  pushStyle();
+  translate(width*0.5, height*0.5);
+  
+  for (int i = 0; i < 15; i++) {
+    fill(25, 100, 100, 50);
+    stroke (25, 100, 100, 50);
+    strokeWeight(1);
+
+    float x = cos(i*(TWO_PI )/15)*centerSize;
+    float y = sin(i*(TWO_PI)/15)*centerSize;
+    float rad = 75;
+    ellipse(x, y, rad, rad);
+  }
+ 
+  for (int i = 0; i < 10; i++) {
+    fill(45, 100, 100, 50);
+    stroke (45, 100, 100, 50);
+    strokeWeight(1);
+
+    float x = cos(i*(TWO_PI)/10)*centerSize/2;
+    float y = sin(i*(TWO_PI)/10)*centerSize/2;
+    float rad = 100;
+    ellipse(x, y, rad, rad);
+  }
+ 
+  fill(0, 100, 100, 100);
+  stroke (0, 100, 100, 100);
+  strokeWeight(1);
+  ellipse(0, 0, centerSize, centerSize);
+
+  popStyle();
+  popMatrix();
+}
+```
+
+Now to make this more interactive we will enable our user to change the centerSize variable with their mouse. For this we will need to [**map()**](https://processing.org/reference/map_.html) the position of our mouse to values that could be used as our centerSize variable.
+
+```java
+centerSize = map(mouseX, 0, width, 0, 150);
+```
+This line of code will be written in the draw() function as we want to calculate a new size for our center each time the user moves the mouse. If the mouse position is on the far left of the screen our centerSize variable will be 0, if it's on the far right centerSize will be 150 thus making the flower bloom when the user move the mouse from left to right.
+
+You will find the code for this first sketch in the folder "sketch_02_blooming_flower".
+
+Next step will be to make it bloom with some data coming from arduino !
 
 
 ## More ressources on Processing
@@ -240,6 +336,8 @@ You will find the code for this first sketch in the folder "sketch_01_first_flow
 
 
 # Processing + arduino == fun !
+
+
     
 
 
@@ -257,3 +355,7 @@ You will find the code for this first sketch in the folder "sketch_01_first_flow
 ### A population of flowers
 
 ## Other bio inspired examples
+
+- Examples from nature of code
+- Examples from Genrative design (noise fields etc.)
+- Custom examples
