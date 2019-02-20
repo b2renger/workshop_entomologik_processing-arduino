@@ -1000,8 +1000,24 @@ void drawFlower( float xpos, float ypos, float[] genome ) {
 
 See the processing sketches in the folder "complementary_sketches"
 
-    - Custom examples.
-    
-    - Currated examples from [nature of code](https://natureofcode.com/).
-    
-    - Currated examples from [Genrative design](http://www.generative-gestaltung.de/2/). 
+- Custom examples.
+
+- Currated examples from [nature of code](https://natureofcode.com/).
+
+- Currated examples from [Genrative design](http://www.generative-gestaltung.de/2/). 
+
+
+## More ressources
+
+If you want to continue with processing, I highly recommend you those ressorurces
+
+- [Fun Programming](https://funprogramming.org/)
+
+- Daniel Shiffman's videos : for [beginners in processing](https://www.youtube.com/user/shiffman/playlists?view=50&sort=dd&shelf_id=2), for [intermediate users of processing](https://www.youtube.com/user/shiffman/playlists?view=50&sort=dd&shelf_id=6), and for [web creatives with p5js](https://www.youtube.com/user/shiffman/playlists?view=50&sort=dd&shelf_id=14)
+
+- Matthew Eppler's videos : on [designing generative systems with p5js](https://www.youtube.com/watch?v=rTqvf0BkTNE&list=PLyRZnpOSgMj3K8AV2I6UldnvTj6d_Zrf0)
+
+- finally [my french introduction to processing for beginners](https://github.com/b2renger/Introduction_Processing)
+
+
+Have Fun !
