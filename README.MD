@@ -571,16 +571,437 @@ smoothedValue = smoothedValue + (valueFromArduino - smoothedValue)*sensitivity;
 
 ## Genetic flower
 
+Now we will dive a little deeper in code and get a simple genetic algorithm running.
+
+The flowers we draw until then had some properties like the size of the button, its color, the number of petals on the first corolla, its color etc.
+
+Those properties are a bunch of number that could be interpreted as some kind of genome. So we will parametrize our flower by using a lot of variables, we will store thoses parameters in an [array](https://processing.org/reference/arrayaccess.html) to have easy access to them and be able to create a new array (genome) that will be a combination of the array (genome) of a *parent1* and a *parent2*.
+
 ### Genome
+
+So let's paramtrize our flower drawing. First we will create a bunch of variables to make explicit what it what in our genomes-arrays.
+
+```java
+int centerSize = 0;
+int centerFillHue = 1;
+int centerOpacity = 2;
+int centerStrokeHue = 3;
+int centerStrokeWeight = 4;
+int firstNumber = 5;
+int firstSize = 6;
+int firstFillHue = 7;
+int firstOpacity = 8;
+int firstStrokeHue = 9;
+int firstStrokeWeight = 10;
+int secondNumber = 11;
+int secondSize = 12;
+int secondFillHue = 13;
+int secondOpacity = 14;
+int secondStrokeHue = 15;
+int secondStrokeWeight = 16;
+```
+
+This means that when we build our array that holds the genome, the first parameter (ie at index 0) will be the centerSize, the second parameter (ie index 1) will be the centerFillHue ... and the last parameter (ie index 16) will be the secondStrokeWeight - that means the strokeWeight of the petals of the second corolla.
+
+So a genome will look like something like this (an [array](https://processing.org/reference/arrayaccess.html) of float values) :
+```java
+float[] genome = new float[] {
+  50, 88, 50, 12, 5, // center
+  17, 50, 152, 10, 152, 0.5, //1st row
+  11, 50, 300, 20, 128, 0.5 //2nd row
+};
+```
+
+Now we will need to adapt the way we draw our flower using thoses parameters :
+```java
+pushMatrix();
+pushStyle();
+translate(xpos, ypos);
+// first draw the second row (in the back)
+for (int i = 0; i < int (genome[secondNumber]); i++) {
+  fill(genome[secondFillHue], 100, 100, genome[secondOpacity]);
+  stroke (genome[secondStrokeHue], 100, 100, genome[secondOpacity]);
+  strokeWeight(genome[secondStrokeWeight]);
+  float x = cos(i*(TWO_PI )/genome[secondNumber])*genome[centerSize];
+  float y = sin(i*(TWO_PI)/genome[secondNumber])*genome[centerSize];
+  float rad = genome[secondSize];
+  ellipse(x, y, rad, rad);
+}
+// then the second one
+for (int i = 0; i < int (genome[firstNumber]); i++) {
+  fill(genome[firstFillHue], 100, 100, genome[firstOpacity]);
+  stroke (genome[firstStrokeHue], 100, 100, genome[firstOpacity]);
+  strokeWeight(genome[firstStrokeWeight]);
+  float x = cos(i*(TWO_PI)/genome[firstNumber])*genome[centerSize]/2;
+  float y = sin(i*(TWO_PI)/genome[firstNumber])*genome[centerSize]/2;
+  float rad = genome[firstSize];
+  ellipse(x, y, rad, rad);
+}
+// finally the center
+fill(genome[centerFillHue], 100, 100, genome[centerOpacity]);
+stroke (genome[centerStrokeHue], 100, 100, genome[centerOpacity]);
+strokeWeight(genome[centerStrokeWeight]);
+ellipse(0, 0, genome[centerSize], genome[centerSize]);
+popStyle();
+popMatrix();
+```
+
+You should recognize here most of the code we wrote until then.
+
+Last but not least we will use a [function](https://processing.org/examples/functions.html) to draw a flower and we will pass some parameters to it.
+
+Using a function will make it easy for us to draw several flowers without having to copy/paste a lot of lines of code, and duplicate many variables.
+
+A function is defined by its name and the parameters. In our case we will want to draw a flower specifying the place we want to draw it (x and y coordinates) and the genome we want to use to draw it.
+
+In our case to draw a flower we just want to write a simple line of code like this one :
+```java
+drawFlower(width/3, height/3, genome1);
+```
+
+So to define our function we will use this syntax :
+
+```java
+void drawFlower( float xpos, float ypos, float[] genome ) {
+    // code to be exectued
+}
+````
+
+So the code we want to be executed is the one above !
+
+Finally the full code for a genetic flower will look like this :
+
+```java d
+/* DNM
+genome Data Model
+ - center size
+ - center fillHue
+ - center opacity
+ - center strokeHue
+ - center strokeWeight
+ 
+ - nb petal 1st row
+ - petal size
+ - 1st row fillHue
+ - 1st row opacity
+ - 1st row strokeHue
+ - 1st row strokeWeight
+ 
+ - nb petal 2nd row
+ - 2nd row fillHue
+ - 2nd row opacity
+ - 2nd row strokeHue
+ - 2nd row strokeWeight
+ */
+
+int centerSize = 0;
+int centerFillHue = 1;
+int centerOpacity = 2;
+int centerStrokeHue = 3;
+int centerStrokeWeight = 4;
+int firstNumber = 5;
+int firstSize = 6;
+int firstFillHue = 7;
+int firstOpacity = 8;
+int firstStrokeHue = 9;
+int firstStrokeWeight = 10;
+int secondNumber = 11;
+int secondSize = 12;
+int secondFillHue = 13;
+int secondOpacity = 14;
+int secondStrokeHue = 15;
+int secondStrokeWeight = 16;
+
+ 
+float[] genome1 = new float[] {
+  50, 88, 50, 12, 5, // center
+  17, 50, 152, 10, 152, 0.5, //1st row
+  11, 50, 300, 20, 128, 0.5 //2nd row
+};
+
+float[] genome2 = new float[] {
+  75, 88, 50, 12, 8, 
+  5, 40, 55, 15, 55, 5, 
+  9, 70, 5, 25, 5, 2
+};
+
+void setup() {
+  size(800, 600);
+  background(0);
+  colorMode(HSB, 360, 100, 100, 100);
+}
+
+void draw() {
+  background(0);
+
+  drawFlower(width/3, height/3, genome1);
+  drawFlower(width*2/3, height/3, genome2);
+}
+
+void drawFlower( float xpos, float ypos, float[] genome ) {
+
+  pushMatrix();
+  pushStyle();
+  translate(xpos, ypos);
+
+  // first draw the second row (in the back)
+  for (int i = 0; i < int (genome[secondNumber]); i++) {
+    fill(genome[secondFillHue], 100, 100, genome[secondOpacity]);
+    stroke (genome[secondStrokeHue], 100, 100, genome[secondOpacity]);
+    strokeWeight(genome[secondStrokeWeight]);
+
+    float x = cos(i*(TWO_PI )/genome[secondNumber])*genome[centerSize];
+    float y = sin(i*(TWO_PI)/genome[secondNumber])*genome[centerSize];
+    float rad = genome[secondSize];
+    ellipse(x, y, rad, rad);
+  }
+  // then the second one
+  for (int i = 0; i < int (genome[firstNumber]); i++) {
+    fill(genome[firstFillHue], 100, 100, genome[firstOpacity]);
+    stroke (genome[firstStrokeHue], 100, 100, genome[firstOpacity]);
+    strokeWeight(genome[firstStrokeWeight]);
+
+    float x = cos(i*(TWO_PI)/genome[firstNumber])*genome[centerSize]/2;
+    float y = sin(i*(TWO_PI)/genome[firstNumber])*genome[centerSize]/2;
+    float rad = genome[firstSize];
+    ellipse(x, y, rad, rad);
+  }
+  // finally the center
+  fill(genome[centerFillHue], 100, 100, genome[centerOpacity]);
+  stroke (genome[centerStrokeHue], 100, 100, genome[centerOpacity]);
+  strokeWeight(genome[centerStrokeWeight]);
+  ellipse(0, 0, genome[centerSize], genome[centerSize]);
+
+  popStyle();
+  popMatrix();
+}
+``` 
 
 ### Parent1 and Parent2 get a child
 
-### Mutations
+Now we want to be able to breed new flowers. That means mix up the genome (arrays) of a flower and another flower.
 
-### A population of flowers
+For this we will create another function. But this one will be a little different : it will take as parameters two genome and return a new one (the child !)
+
+Before the syntax of our function used the term *void* this means that this function didn't return anything (in our case it was just about drawing stuff on the screen). This time we will want to [return](https://processing.org/reference/return.html) a new genome (ie an array of floats)
+
+So the syntax will be a little different :
+
+```java
+float[] breeding(float[] parent1, float[] parent2) {
+    // code to be executed
+}
+```
+
+The code we want to write will have to do a few things :
+- first create a new array of floats to hold the new genome
+- iterate over both genomes of parent1 and parent2 to choose which genes gets our child
+- return the new genome.
+
+To create a new array we will just use the classic java syntax and initialize and array of 16 values (ie a length of 15 becaus we start to count at 0)
+```java
+float [] newgenes = new float [15];
+```
+
+To iterate over both genomes we will use a for loop and use random to choose from which parent we will take the gene :
+```java
+for (int i = 0; i < parent1.length; i++) {
+    if (random(100)<50) {// fifty - fifty chance
+      newgenes[i] = parent1[i];
+    } else {
+      newgenes[i] = parent2[i];
+    }
+}
+```
+
+And finally we return the new genome : 
+```java
+return newgenes;
+```
+
+So our full breeding function will look like this :
+
+```java
+float[] breeding(float[] parent1, float[] parent2) {
+    float [] newgenes = new float [parent1.length];
+  for (int i = 0; i < parent1.length; i++) {
+    if (random(100)<50) {
+      newgenes[i] = parent1[i];
+    } else {
+      newgenes[i] = parent2[i];
+    }
+  }
+  return newgenes;
+}
+```
+
+Now we will want to use it !
+
+We will need to have a *child* variable : something to hold its genome.
+
+```java
+float[] child = new float[15];
+```
+
+In the setup, we will need to breed another a first born :
+```java
+child = breeding(genome1, genome2);
+```
+
+And in the draw we will want to draw both parents and the child :
+```java
+drawFlower(width/3, height/3, genome1);
+drawFlower(width*2/3, height/3, genome2);
+drawFlower(width/2, height*2/3, child);
+```
+Last each time a key is pressed we will generate a new child :
+```java
+void keyPressed() {
+  child = breeding(genome1, genome2);
+}
+```
+
+The full code for this example is available as "sketch_07_breeding_flowers".
+
+Here is the full code, notice how the setup and draw functions only have a few lines of code.
+
+```java
+/* DNM
+genome Data Model
+ - center size
+ - center fillHue
+ - center opacity
+ - center strokeHue
+ - center strokeWeight
+ 
+ - nb petal 1st row
+ - petal size
+ - 1st row fillHue
+ - 1st row opacity
+ - 1st row strokeHue
+ - 1st row strokeWeight
+ 
+ - nb petal 2nd row
+ - 2nd row fillHue
+ - 2nd row opacity
+ - 2nd row strokeHue
+ - 2nd row strokeWeight
+ */
+ 
+ // enum type like way to adress arrays indexes
+int centerSize = 0;
+int centerFillHue = 1;
+int centerOpacity = 2;
+int centerStrokeHue = 3;
+int centerStrokeWeight = 4;
+int firstNumber = 5;
+int firstSize = 6;
+int firstFillHue = 7;
+int firstOpacity = 8;
+int firstStrokeHue = 9;
+int firstStrokeWeight = 10;
+int secondNumber = 11;
+int secondSize = 12;
+int secondFillHue = 13;
+int secondOpacity = 14;
+int secondStrokeHue = 15;
+int secondStrokeWeight = 16;
+
+ 
+float[] genome1 = new float[] {
+  50, 88, 50, 12, 5, // center
+  17, 50, 152, 10, 152, 0.5, //1st row
+  11, 50, 300, 20, 128, 0.5 //2nd row
+};
+
+float[] genome2 = new float[] {
+  75, 88, 50, 12, 8, 
+  5, 40, 55, 15, 55, 5, 
+  9, 70, 5, 25, 5, 2
+};
+
+
+float[] child = new float[15];
+
+void setup() {
+  size(800, 600);
+  background(0);
+  colorMode(HSB, 360, 100, 100, 100);
+
+  child = breeding(genome1, genome2);
+}
+
+void draw() {
+  background(0);
+
+  drawFlower(width/3, height/3, genome1);
+  drawFlower(width*2/3, height/3, genome2);
+  drawFlower(width/2, height*2/3, child);
+}
+
+void keyPressed() {
+  child = breeding(genome1, genome2);
+}
+
+
+float[] breeding(float[] parent1, float[] parent2) {
+    float [] newgenes = new float [parent1.length];
+  for (int i = 0; i < parent1.length; i++) {
+    if (random(100)<50) {
+      newgenes[i] = parent1[i];
+    } else {
+      newgenes[i] = parent2[i];
+    }
+  }
+  return newgenes;
+}
+
+
+void drawFlower( float xpos, float ypos, float[] genome ) {
+
+  pushMatrix();
+  pushStyle();
+  translate(xpos, ypos);
+
+  // first draw the second row (in the back)
+  for (int i = 0; i < int (genome[secondNumber]); i++) {
+    fill(genome[secondFillHue], 100, 100, genome[secondOpacity]);
+    stroke (genome[secondStrokeHue], 100, 100, genome[secondOpacity]);
+    strokeWeight(genome[secondStrokeWeight]);
+
+    float x = cos(i*(TWO_PI )/genome[secondNumber])*genome[centerSize];
+    float y = sin(i*(TWO_PI)/genome[secondNumber])*genome[centerSize];
+    float rad = genome[secondSize];
+    ellipse(x, y, rad, rad);
+  }
+  // then the second one
+  for (int i = 0; i < int (genome[firstNumber]); i++) {
+    fill(genome[firstFillHue], 100, 100, genome[firstOpacity]);
+    stroke (genome[firstStrokeHue], 100, 100, genome[firstOpacity]);
+    strokeWeight(genome[firstStrokeWeight]);
+
+    float x = cos(i*(TWO_PI)/genome[firstNumber])*genome[centerSize]/2;
+    float y = sin(i*(TWO_PI)/genome[firstNumber])*genome[centerSize]/2;
+    float rad = genome[firstSize];
+    ellipse(x, y, rad, rad);
+  }
+  // finally the center
+  fill(genome[centerFillHue], 100, 100, genome[centerOpacity]);
+  stroke (genome[centerStrokeHue], 100, 100, genome[centerOpacity]);
+  strokeWeight(genome[centerStrokeWeight]);
+  ellipse(0, 0, genome[centerSize], genome[centerSize]);
+
+  popStyle();
+  popMatrix();
+}
+```
 
 ## Other bio inspired examples
 
-- Examples from nature of code
-- Examples from Genrative design (noise fields etc.)
-- Custom examples
+See the processing sketches in the folder "complementary_sketches"
+
+    - Custom examples.
+    
+    - Currated examples from [nature of code](https://natureofcode.com/).
+    
+    - Currated examples from [Genrative design](http://www.generative-gestaltung.de/2/). 
