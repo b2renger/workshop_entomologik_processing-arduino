@@ -479,6 +479,96 @@ You have to try to make this work with two sensors of your choice, and then add 
 
 # Digging a little deeper with Processing
 
+## First a little word on interpolation
+
+You may have notice that sometimes data coming from sensors is not really stable. For instance from a microphone the values may jitter a lot. There is many strategies to tackle this kind of problem : some can be on the electronic side and some other can be in the software part of the program we write; some are not very efficient but simple and some can be very complicated.
+
+Using [map](https://processing.org/reference/map_.html) cohenrently with [constrain](https://processing.org/reference/constrain_.html) will help you adapt the values you and get them in a tight range.
+
+We will look into interpolation a simple software technic that has it's limits but can be pretty efficient and useful in many case.
+
+The principle behind it is to set a target and calculate the values from the value we are at to the target by adding each frame a litle bit of the difference between both values. This will smooth an animation or data coming from a sensor.
+
+For instance let's say you have a circle and you want it to move to the point where your mouse is at when you click. With no interpolation the circle will jump to its new position.
+
+```java
+float xpos;
+float ypos;
+
+void setup(){ 
+  size(800, 600);
+  
+  xpos = width/2;
+  ypos = height/2;
+  background(0);
+}
+
+
+void draw(){
+  background(0);
+  
+  if (mousePressed == true){
+    xpos = mouseX;
+    ypos = mouseY;
+  }
+  ellipse(xpos,ypos,50,50);
+  
+}
+```
+So let's add a little bit to this program to smoothen things up.
+
+First we will add a few variables : two for our new target, and one for the interpolation sensitivity.
+
+```java
+float xtarget;
+float ytarget;
+float sensitivity = 0.05;
+```
+
+**In the setup** we will initialize our targets to the same position we are at so that there is no movement at first.
+
+```java
+xtarget = width/2;
+ytarget = height/2;
+```
+
+**In the draw**, when the mouse is pressed we will want to set a new value to our targets, those new values will be the position of the mouse.
+
+```java
+if (mousePressed == true){
+   xtarget = mouseX;
+   ytarget = mouseY;
+}
+```
+
+Now after that we can (still in the draw), do a calculation and add a little bit of the difference between our target and our current position to our current position.
+
+```java
+xpos = xpos + (xtarget-xpos)*sensitivity;
+ypos = ypos + (ytarget-ypos)*sensitivity;
+```
+
+The full code for this sketch is available as "sketch_05_interpolation".
+
+So getting back to arduino : say you want to smooth a value coming from arduino. You already have a variable.
+
+```java
+float valueFromArduino = 0;
+````
+
+This variable will act as our target. We will need before the setup to create to new variables, a variable to hold the smoothed value and a variable for sensitivity.
+
+```java
+float smoothedValue = 0;
+float sensitivity = 0.01;
+```
+
+In the draw we can now update the smoothedValue variable with our interpolation technic.
+
+```java
+smoothedValue = smoothedValue + (valueFromArduino - smoothedValue)*sensitivity;
+```
+
 ## Genetic flower
 
 ### Genome
