@@ -1017,7 +1017,12 @@ If you want to continue with processing, I highly recommend you those ressorurce
 
 - Matthew Eppler's videos : on [designing generative systems with p5js](https://www.youtube.com/watch?v=rTqvf0BkTNE&list=PLyRZnpOSgMj3K8AV2I6UldnvTj6d_Zrf0)
 
-- finally [my french introduction to processing for beginners](https://github.com/b2renger/Introduction_Processing)
+- [my french introduction to processing for beginners](https://github.com/b2renger/Introduction_Processing)
+
+- [my french introduction to p5js for beginners](https://github.com/b2renger/Introduction_p5js)
+
+- [my french cookbook for arduino](https://github.com/b2renger/Introduction_arduino#contenu)
+
 
 
 Have Fun !
