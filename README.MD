@@ -1,6 +1,31 @@
+# Introduction to bio inspired systems with processing and arduino
+
 In this repo we will work with [processing](https://processing.org/) and [arduino](https://www.arduino.cc/). Both environment have made it possible over the years for designers and artists to produce [rich interactive experiences and artworks](https://processing.org/exhibition/) both in the field of multimedia programming (processing) and electronics (arduino).
 
-# Arduino
+## Contents
+
+* [Arduino](#Arduino)
+
+* [Processing - drawing a flower](#Processing---drawing-a-flower)
+  * [Getting Started](#Getting-Started)
+  * [The flower project](#The-flower-project)
+      * [A simple circle](#A-simple-circle)
+      * [A for() loop for the petals](#A-for()-loop-for-the-petals)
+      * [Let's use a variable to parametrize our flower and make it bloom !](#Let's-use-a-variable-to-parametrize-our-flower-and-make-it-bloom-!)
+  * [More ressources on Processing](#More-ressources-on-Processing)
+
+* [Processing + arduino == fun !](#Processing-+-arduino-==-fun-!)
+  * [Make our flower bloom with data from a sensor](#Make-our-flower-bloom-with-data-from-a-sensor)
+  * [Read data from sensors and log them on our computer](#Read-data-from-sensors-and-log-them-on-our-computer)
+  * [Digging a little deeper with Processing](#Digging-a-little-deeper-with-Processing)
+    * [First a little word on interpolation](#First-a-little-word-on-interpolation)
+    * [Genetic flower](#Genetic-flower)
+      * [Genome](#Genome)
+      * [Parent1 and Parent2 get a child](#Parent1-and-Parent2-get-a-child)
+* [Other bio inspired examples](#Other-bio-inspired-examples)
+* [More ressources](#More-ressources)
+
+## Arduino
 
 Your main ressource about arduino will be located [here](https://github.com/b2renger/Introduction_arduino#contenu), it's in french, but having the code and the schematics of the circuits should be enough for most usages. This introduction covers some sensors and actuators but far from everything that is possible to do with arduino. One interesting part for us will be the part explaining communication between processing and arduino via **Serial** (Universal Serial Bus i.e. USB). Right at the end, three examples will explain to you [how to control the playback of video with a distance sensor](https://github.com/b2renger/Introduction_arduino#controler-le-playback-dune-vid%C3%A9o-avec-un-capteur-de-distance), [how to control an animation with a photoresistance](https://github.com/b2renger/Introduction_arduino#controler-une-animation-avec-une-photoresistance) and finally the other way around [how to send mouse coordinates to arduino to light up a RGB led strip](https://github.com/b2renger/Introduction_arduino#controler-des-leds-neopixels-avec-la-souris) - this one is a little bit harder. But we will get back to this later on.
 
@@ -8,26 +33,29 @@ First you should spend some time with arduino, discover the examples : build the
 
 Next we will take a deeper look at processing.
 
+[**home**](#Contents)<br>
 
-# Processing - drawing a flower
+
+## Processing - drawing a flower
 
 *Processing seeks to ruin the careers of talented designers by tempting them away from their usual tools and into the world of programming and computation. Similarly, the project is designed to turn engineers and computer scientists to less gainful employment as artists and designers.*
 
 Appart from this processing is an amazing middleware to make things communicate, sketch simple things through code etc.
 
 
-## Getting started
+### Getting started
 
 This [first link](https://processing.org/tutorials/gettingstarted/) should get you started with processing. You'll get the basics of the interface a write your first sketch : an ellipse following the mouse !
 
 This [second link](https://processing.org/tutorials/drawing/) will give you a little more insights about the coordinate system of processing and the difference kind of shapes you can draw.
 
+[**home**](#Contents)<br>
 
-## The flower project
+
+### The flower project
 
 So let's get started on our flower project ! In this project we will get used to the processing environment and draw some shapes. We will use the HSB color mode and polar coordinate system to draw some flowers, then we will see how to parametrize those and animate them using data coming from an arduino card.
 
-### Our first flower
 
 #### A simple circle
 
@@ -76,18 +104,20 @@ In red is the coordinate system after having called :
 translate(mouseX, mouseY);
 ```
 In blue is the coordinate system after having called :
-```
+```java
 translate(mouseX, mouseY);
 rotate(PI/5);
 ```
 
 So we just use this in combination with
-```
+```java
 translate(width*0.5, height*0.5);
-````
+```
 to place us at the center of our drawing window. 
 
 After that we can prepare to start drawing by specifying the fill and stroke of our future drawing (remember you always need to choose your pen before you start drawing !). And finally comes our [ellipse()](https://processing.org/reference/ellipse_.html). We will draw it at (0,0) since we translated our coordonate system to the center of the window and its diameter will be 100 pixels.
+
+[**home**](#Contents)<br>
 
 #### A for() loop for the petals
 
@@ -222,8 +252,9 @@ Once it is done you will find yourself with a beautifull flower like this one :
     
 You will find the code for this first sketch in the folder "sketch_01_first_flower".
 
+[**home**](#Contents)<br>
     
-### Let's use a variable to parametrize our flower and make it bloom !
+#### Let's use a variable to parametrize our flower and make it bloom !
 
 To make our flower bloom we will need to create a **variable**. A variable is a space in our computer's memory where we store something alongside with a name (of your choosing) to enable easy access to this value either to read it or to modify it.
 
@@ -325,8 +356,10 @@ You will find the code for this first sketch in the folder "sketch_02_blooming_f
 
 Next step will be to make it bloom with some data coming from arduino !
 
+[**home**](#Contents)<br>
 
-## More ressources on Processing
+
+### More ressources on Processing
 
 - the official reference of the language : https://processing.org/reference/
 
@@ -334,10 +367,11 @@ Next step will be to make it bloom with some data coming from arduino !
 
 - fun programming videos : https://funprogramming.org/
 
+[**home**](#Contents)<br>
 
-# Processing + arduino == fun !
+## Processing + arduino == fun !
 
-## Make our flower bloom with data from a sensor
+### Make our flower bloom with data from a sensor
 
 To do this we will need to make a little bit of arduino.
 
@@ -466,7 +500,9 @@ centerSize = map(valueFromArduino, 0, 1023, 0, 150);
 ```
 You will find the code for this sketch in the folder "sketch_03_b_processing_read_from_serial_and_bloom"
 
-## Read data from sensors and log them on our computer.
+[**home**](#Contents)<br>
+
+### Read data from sensors and log them on our computer
 
 Now we will look how to get data from arduino and log it into a file on our computer : a bit less fun but pretty usefull.
 
@@ -476,10 +512,11 @@ You will find the code for this program in the folder "sketch_04_Data_logging", 
 
 You have to try to make this work with two sensors of your choice, and then add a third one by modifying both programs.
 
+[**home**](#Contents)<br>
 
-# Digging a little deeper with Processing
+## Digging a little deeper with Processing
 
-## First a little word on interpolation
+### First a little word on interpolation
 
 You may have notice that sometimes data coming from sensors is not really stable. For instance from a microphone the values may jitter a lot. There is many strategies to tackle this kind of problem : some can be on the electronic side and some other can be in the software part of the program we write; some are not very efficient but simple and some can be very complicated.
 
@@ -569,7 +606,9 @@ In the draw we can now update the smoothedValue variable with our interpolation 
 smoothedValue = smoothedValue + (valueFromArduino - smoothedValue)*sensitivity;
 ```
 
-## Genetic flower
+[**home**](#Contents)<br>
+
+### Genetic flower
 
 Now we will dive a little deeper in code and get a simple genetic algorithm running.
 
@@ -577,7 +616,9 @@ The flowers we draw until then had some properties like the size of the button, 
 
 Those properties are a bunch of number that could be interpreted as some kind of genome. So we will parametrize our flower by using a lot of variables, we will store thoses parameters in an [array](https://processing.org/reference/arrayaccess.html) to have easy access to them and be able to create a new array (genome) that will be a combination of the array (genome) of a *parent1* and a *parent2*.
 
-### Genome
+[**home**](#Contents)<br>
+
+#### Genome
 
 So let's paramtrize our flower drawing. First we will create a bunch of variables to make explicit what it what in our genomes-arrays.
 
@@ -776,8 +817,9 @@ void drawFlower( float xpos, float ypos, float[] genome ) {
   popMatrix();
 }
 ``` 
+[**home**](#Contents)<br>
 
-### Parent1 and Parent2 get a child
+#### Parent1 and Parent2 get a child
 
 Now we want to be able to breed new flowers. That means mix up the genome (arrays) of a flower and another flower.
 
@@ -996,6 +1038,8 @@ void drawFlower( float xpos, float ypos, float[] genome ) {
 }
 ```
 
+[**home**](#Contents)<br>
+
 ## Other bio inspired examples
 
 See the processing sketches in the folder "complementary_sketches"
@@ -1006,6 +1050,7 @@ See the processing sketches in the folder "complementary_sketches"
 
 - Currated examples from [Genrative design](http://www.generative-gestaltung.de/2/). 
 
+[**home**](#Contents)<br>
 
 ## More ressources
 
@@ -1021,8 +1066,10 @@ If you want to continue with processing, I highly recommend you those ressorurce
 
 - [my french introduction to p5js for beginners](https://github.com/b2renger/Introduction_p5js)
 
-- [my french cookbook for arduino](https://github.com/b2renger/Introduction_arduino#contenu)
+- [my french cookbook for arduino](https://github.com/b2renger/Introduction_arduino#Contents)
 
 
 
 Have Fun !
+
+[**home**](#Contents)<br>
